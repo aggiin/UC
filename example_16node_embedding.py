@@ -4,12 +4,13 @@ Example: 16-Node Degree-2 DAG Embedding with Time Complexity Analysis
 
 This example demonstrates:
 1. Creating a 16-node Edge Universal Graph (EUG) with degree 2
-2. Randomly generating a 16-node DAG with degree 2
-3. Embedding the DAG into the EUG
-4. Measuring the embedding time
+2. Randomly generating 100 different 16-node DAGs with degree 2
+3. Embedding each DAG into the EUG
+4. Measuring the average embedding time over 100 trials
 5. Analyzing the time complexity
 
 示例：16节点度为2的DAG嵌入及时间复杂度分析
+包含100次随机嵌入的平均时间测量
 """
 
 import random
@@ -326,19 +327,56 @@ def main():
     print(f"  - Average degree: {edge_count / dag.node_number:.2f}")
     print()
     
-    # Part 2: Embed the DAG and measure time
+    # Part 2: Perform 100 random embeddings and measure average time
     print("="*80)
-    print("Part 2: Embedding DAG into Universal Graph | 第2部分：将DAG嵌入通用图")
+    print("Part 2: 100 Random 16-Node Embeddings | 第2部分：100次随机16节点嵌入")
     print("="*80)
     print()
     
-    embedding_time, valiant_dag = measure_embedding_time(dag, num_inputs, num_outputs)
+    num_trials = 100
+    print(f"Performing {num_trials} random embeddings of 16-node DAGs...")
+    print(f"执行 {num_trials} 次16节点DAG的随机嵌入...")
+    print()
+    
+    embedding_times = []
+    for trial in range(num_trials):
+        # Generate a new random DAG for each trial
+        dag_trial = random_dag_gamma2(n, seed=trial)
+        embedding_time, valiant_dag = measure_embedding_time(dag_trial, num_inputs, num_outputs)
+        embedding_times.append(embedding_time)
+        
+        # Print progress every 10 trials
+        if (trial + 1) % 10 == 0:
+            print(f"  Progress: {trial + 1}/{num_trials} embeddings completed")
+    
+    # Calculate statistics
+    import statistics
+    avg_time = statistics.mean(embedding_times)
+    std_dev = statistics.stdev(embedding_times) if len(embedding_times) > 1 else 0
+    min_time = min(embedding_times)
+    max_time = max(embedding_times)
     
     print()
-    print(f"✓ Embedding completed successfully!")
-    print(f"  - Embedding time: {embedding_time:.6f} seconds")
-    print(f"  - Universal graph poles: {valiant_dag.pole_number}")
-    print(f"  - Universal graph nodes: {len(valiant_dag.node_array)}")
+    print("="*80)
+    print("Embedding Statistics | 嵌入统计")
+    print("="*80)
+    print(f"  Total trials: {num_trials}")
+    print(f"  总试验次数: {num_trials}")
+    print()
+    print(f"  Average time: {avg_time:.6f} seconds")
+    print(f"  平均时间: {avg_time:.6f} 秒")
+    print()
+    print(f"  Standard deviation: {std_dev:.6f} seconds")
+    print(f"  标准差: {std_dev:.6f} 秒")
+    print()
+    print(f"  Minimum time: {min_time:.6f} seconds")
+    print(f"  最小时间: {min_time:.6f} 秒")
+    print()
+    print(f"  Maximum time: {max_time:.6f} seconds")
+    print(f"  最大时间: {max_time:.6f} 秒")
+    print()
+    print(f"✓ All {num_trials} embeddings completed successfully!")
+    print(f"✓ 所有 {num_trials} 次嵌入成功完成！")
     print()
     
     # Part 3: Time complexity analysis
@@ -364,12 +402,14 @@ def main():
     print("  1. Successfully created 16-node degree-2 DAG")
     print("     成功创建16节点度为2的DAG")
     print()
-    print("  2. Embedded the DAG into Edge Universal Graph (EUG)")
-    print("     将DAG嵌入边通用图(EUG)")
+    print("  2. Performed 100 random embeddings into Edge Universal Graph (EUG)")
+    print("     执行了100次随机嵌入到边通用图(EUG)")
     print()
-    print("  3. Measured embedding time:")
-    print(f"     For n=16: {embedding_time:.6f} seconds")
-    print(f"     对于n=16: {embedding_time:.6f} 秒")
+    print("  3. Average embedding time over 100 trials:")
+    print(f"     For n=16: {avg_time:.6f} seconds (±{std_dev:.6f})")
+    print(f"     对于n=16: {avg_time:.6f} 秒 (±{std_dev:.6f})")
+    print(f"     Range: [{min_time:.6f}, {max_time:.6f}] seconds")
+    print(f"     范围: [{min_time:.6f}, {max_time:.6f}] 秒")
     print()
     print("  4. Time complexity confirmed: O(n log n)")
     print("     时间复杂度确认: O(n log n)")
